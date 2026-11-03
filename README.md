@@ -1,81 +1,70 @@
 # ask-david
 
-Skill para agentes (Claude Code, Codex, claude.ai) que resuelve cuestiones técnicas
-como las resolvería David: stack, criterios de arquitectura y seguridad, tests y gate,
-git, qué cuenta como hecho, cómo se usan Lumbre, Hebra, Fragua y Sumego, instalación
-de MCP y skills, y entorno de desarrollo.
+Skill para consultar los criterios técnicos de David en el espacio **dualhand** de
+Hebra, citando las notas de origen. Si no hay una posición escrita, pregunta a David.
 
-La skill no lleva el contenido. Lo lee con el MCP de Hebra de las notas del espacio
-compartido "dualhand", carpeta `30-39 equipo/31 forma de trabajar/31.11 ask-david`.
-Cuando no hay posición escrita, redacta la pregunta para David y, con su respuesta
-literal, la apunta en el índice.
+Estas instrucciones son públicas: puedes empezar sin tener Hebra conectado.
+Solo necesitas **el MCP remoto de Hebra y la skill `ask-david`**. Tu cuenta debe
+ser miembro de **dualhand** y tener habilitado allí el acceso de agentes desde Hebra.
 
-## Requisitos
+## Pídeselo a Claude
 
-1. Node.js (para `npx`): `brew install node` en macOS, `sudo dnf install nodejs` en
-   Fedora.
-2. El MCP de Hebra conectado con tu cuenta (paso 1 de la instalación).
-3. Ser miembro del espacio "dualhand" en Hebra y encender en él el acceso de agentes,
-   desde la app Hebra.
+Copia este prompt en Claude Code:
 
-## Instalación
-
-### 1. Conectar el MCP de Hebra
-
-Claude Code:
-
-```bash
-claude mcp add --transport http hebra https://mcp.hebra.pro/mcp
+```text
+Lee https://github.com/fodaveg/ask-david y sigue su README para instalar lo mínimo:
+el MCP remoto de Hebra y la skill ask-david. Reutiliza lo que ya esté configurado.
+Ejecuta la instalación y guíame en el login, el emparejado y el permiso de dualhand
+que tenga que aprobar personalmente. Comprueba el acceso real al índice de
+ask-david y responde a una consulta citando su fuente. No des la instalación por
+terminada si solo has escrito la configuración.
 ```
 
-Después abre `/mcp` en Claude Code y autoriza la conexión en el navegador.
+## Claude Code: instalación mínima
 
-Codex:
+Necesitas Node.js con `npm`/`npx` para instalar la skill. Si Hebra ya está conectado
+y funciona en tu sesión, conserva esa conexión y omite el primer comando.
+
+```bash
+claude mcp add --transport http --scope user hebra https://mcp.hebra.pro/mcp
+npx --yes skills add fodaveg/ask-david -g -y --skill ask-david --agent claude-code
+```
+
+1. Abre **`/mcp` dentro de Claude Code**, selecciona Hebra y completa el login con
+   **tu propia cuenta**. No pegues contraseñas, tokens ni claves en el chat.
+2. Si aún no tienes biblioteca conectada, sigue el emparejado web y aprueba el
+   dispositivo desde tu Hebra. Lee el aviso: el servidor guardará la clave de tu
+   biblioteca y quien tenga acceso root podrá leer sus notas. Comprueba los títulos
+   mostrados antes de confirmar. Habilita también el acceso de tu agente en dualhand.
+3. Abre una conversación nueva y pide:
+
+   ```text
+   Usa ask-david: ¿qué considera David trabajo terminado?
+   ```
+
+Debe responder citando una nota de dualhand. La skill local sin acceso a ese
+espacio todavía no funciona. Compartir dualhand no da acceso a la biblioteca
+personal de David.
+
+## Otros clientes
+
+**claude.ai:** añade o reutiliza el conector `https://mcp.hebra.pro/mcp` y completa
+el login y emparejado anteriores. Descarga este repo, comprime la carpeta
+[`skills/ask-david`](skills/ask-david) con su `SKILL.md` dentro y carga el ZIP en
+**Customize > Skills**. Activa la skill y prueba la consulta anterior. Instalarla
+con `npx` en un ordenador no la instala en claude.ai.
+
+**Codex:** usa estos comandos y completa el mismo emparejado y permiso de dualhand:
 
 ```bash
 codex mcp add hebra --url https://mcp.hebra.pro/mcp
 codex mcp login hebra
+npx --yes skills add fodaveg/ask-david -g -y --skill ask-david --agent codex
 ```
 
-claude.ai (web, escritorio o móvil): añade un conector personalizado con la URL
-`https://mcp.hebra.pro/mcp`. No añadas un token en la URL.
-
-### 2. Instalar la skill
-
-Claude Code y Codex, con [`skills`](https://skills.sh):
-
-```bash
-npx --yes skills add fodaveg/ask-david -g -y --skill ask-david --agent codex claude-code
-```
-
-Comprueba que quedó instalada:
-
-```bash
-test -f ~/.agents/skills/ask-david/SKILL.md && echo ok
-test -f ~/.claude/skills/ask-david/SKILL.md && echo ok
-```
-
-claude.ai: comprime la carpeta `skills/ask-david` (con su `SKILL.md` dentro) en un
-ZIP y súbelo como skill personalizada desde los ajustes de claude.ai.
-
-### 3. Probarla
-
-Abre una conversación nueva y pide:
-
-```
-usa ask-david: ¿qué versión de Node uso en los proyectos web?
-```
-
-Tiene que responder citando la nota y el apartado de donde lo saca.
-
-## Actualizar
-
-```bash
-npx --yes skills update ask-david -g -y
-```
-
-La skill sigue la rama `main` de este repositorio. Las posiciones se actualizan en
-Hebra y no necesitan actualizar la skill.
+Las instrucciones ampliadas del equipo están en dualhand y se consultan después
+de conectar Hebra. Las posiciones de David se actualizan allí; la skill se
+actualiza repitiendo su comando de instalación, conservando cambios locales.
 
 ## Licencia
 
