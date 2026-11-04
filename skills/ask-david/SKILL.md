@@ -30,10 +30,12 @@ que hay que conectar el MCP de Hebra (ver el README del repo `fodaveg/ask-david`
 
 ## Cómo se consulta
 
-1. Busca el espacio y lee el índice. `hebra_list_spaces` devuelve solo `spaceId`,
-   sin nombre. Con cada `spaceId`, prueba `hebra_read_note` con `space` = ese id,
-   `title` = `31.11 ask-david: índice` y `heading` = `Qué hay en cada nota`. El
-   espacio que devuelve la nota es dualhand; la tabla dice qué nota cubre cada tema.
+1. Busca el espacio y lee el índice. `hebra_list_spaces` devuelve `spaceId` y `name`
+   (`name` puede ser `null`). Empieza por el espacio llamado dualhand, sin distinguir
+   mayúsculas; si no hay nombre, prueba cada `spaceId`. Usa `hebra_read_note` con
+   `space` = ese id, `title` = `31.11 ask-david: índice` y `heading` =
+   `Qué hay en cada nota`. El espacio que devuelve la nota es dualhand; la tabla dice
+   qué nota cubre cada tema.
 2. Pasa ese `spaceId` como `space` en TODAS las llamadas siguientes. Sin `space`, el
    MCP lee la biblioteca personal y no encontrará nada.
 3. Mira los apartados de la nota elegida con `hebra_note_outline` (por `title`).
