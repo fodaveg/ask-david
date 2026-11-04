@@ -73,7 +73,10 @@ No la deduzcas ni la completes con lo que parece razonable.
 | Respuesta | Qué hacer |
 |---|---|
 | Ningún `spaceId` devuelve el índice, o la lista de espacios sale vacía | Falta ser miembro de dualhand o encender el acceso de agentes en ese espacio desde la app Hebra. Dilo y para |
-| `space_access_denied` tras varias llamadas seguidas | El relé de espacios limita la frecuencia. Espera un minuto y repite una vez. Si vuelve a fallar, es falta de acceso |
+| dualhand sale con `granted: false`, o `space_access_denied` | Falta acceso: membresía de dualhand o el acceso de agentes encendido en ese espacio desde la app Hebra. Dilo y para |
+| `space_unavailable` con `reason: rate_limited` | Lumbre limita la frecuencia. No es falta de acceso. Espera los `retryAfterSeconds` que trae y repite una vez |
+| El conector responde 503 | Está abriendo tu biblioteca o le falta memoria. Espera lo que indique `Retry-After` y repite una vez |
+| `hebra_status` dice `revoked: true` | La conexión con la biblioteca se cortó. Hay que volver a conectar Hebra desde el cliente: al iniciar sesión se ofrece renovarla, sin perder notas. Dilo y para |
 | `not_found` o `ambiguous_title` con un título | Lista la carpeta con `hebra_list_notes` (`folder` de arriba y `space`) y usa el `id` |
 | La lista de la carpeta sale vacía | Comprueba que pasas `space`. Después, `hebra_status` para ver si el sync está al día |
 

@@ -8,9 +8,9 @@ dice cómo consultarlas. Revisado contra el código el 4 de noviembre de 2026. E
 recorrido con una cuenta nueva todavía no se ha probado de principio a fin: si algo
 no coincide con lo que ves, avisa a David.
 
-> **`claude mcp add` no funciona hoy con Hebra.** El comando se acepta, pero al
-> autorizar el servidor responde `invalid_client`. En Claude Code, usa el conector
-> de claude.ai, que Claude Code hereda.
+> **En Claude Code, usa el conector de claude.ai, que Claude Code hereda.** Es la vía
+> comprobada. Desde el 4 de noviembre de 2026, el servidor de Hebra ya admite a Claude
+> Code al autorizar, pero `claude mcp add` no se ha probado hasta el final.
 
 ## Antes de empezar
 
@@ -56,14 +56,17 @@ la conexión caduca a los 10 minutos.
    ```
 
 2. Comprueba que Lumbre y Sumego están abiertos con **tu cuenta** en ese navegador, o
-   cierra la sesión que haya. Si es de otra persona, la conexión acaba en "Cuenta
-   incorrecta".
+   cierra la sesión que haya. Si Lumbre tiene abierta otra cuenta, la página te lo dice
+   antes de aprobar nada.
 3. Abre Hebra en tu otro dispositivo, en **Ajustes > Sincronización**.
 4. Añade el conector en [claude.ai/customize/connectors](https://claude.ai/customize/connectors):
    **+ Add > Add custom connector**, con la URL `https://mcp.hebra.pro/mcp`. En Team y
    Enterprise, el Owner lo añade en **Organization settings > Connectors**.
 5. Pulsa conectar y entra en Sumego. No pegues contraseñas, tokens ni claves en el chat.
-6. En Lumbre, pulsa **Autorizar y volver a Hebra**.
+6. Lee **Conecta tu biblioteca**: dice qué aplicación pide la conexión, qué cuenta se
+   conecta y qué necesitas, incluido el código de recuperación exportado en el
+   dispositivo con el que vas a aprobar. Si no lo has pedido tú, cancela. Si todo está
+   bien, pulsa **Continuar en Lumbre** y después **Autorizar y volver a Hebra**.
 7. En tu Hebra, pulsa **Buscar solicitudes** y aprueba la solicitud. Lee el aviso: el
    servidor guardará la clave de tu biblioteca y quien tenga acceso root podrá leer
    sus notas.
@@ -112,18 +115,24 @@ primera vez: mientras tanto, las búsquedas pueden salir vacías y `hebra_status
 
 | Qué ves | Qué significa | Qué hacer |
 |---|---|---|
-| `{"error":"invalid_client",...}` en el navegador, o Claude Code esperando sin fin | Usaste `claude mcp add` | Quita la entrada y sigue el apartado 1 |
+| Claude Code esperando sin fin, o un error de autorización en el navegador | Usaste `claude mcp add`, que no se ha probado hasta el final | Quita la entrada y sigue el apartado 1 |
 | Conectado en claude.ai, pero en Claude Code sale oculto o pide autenticación | Hay una entrada local con la misma URL | `claude mcp remove hebra` |
 | Claude Code no muestra el conector | Entraste con API key, o no has abierto una sesión nueva | `/login` con tu suscripción y conversación nueva |
 | "Aprueba en Hebra" no avanza | Hebra no ve la solicitud: sin sincronización o sin dispositivo vinculado | Conecta y sincroniza Hebra, pulsa **Buscar solicitudes** y, si caducó, empieza otra vez |
 | "Conexión rechazada" | Biblioteca vacía o recién creada, página recargada, o la vuelta se abrió en otro navegador o en la app de Lumbre | Conecta otra vez desde Claude, en el navegador del ordenador |
-| "Cuenta incorrecta" | Lumbre tenía abierta otra cuenta, o se acabó el plazo | Comprueba las sesiones y conecta otra vez |
+| "Lumbre tiene abierta otra cuenta" | La sesión de Lumbre de ese navegador es de otra persona. No se ha conectado nada | Cierra esa sesión, entra con tu cuenta y continúa |
+| "Cuenta incorrecta" | La biblioteca no es de la cuenta que inició la conexión | Comprueba las sesiones y conecta otra vez |
+| "Autorización no válida" | La autorización caducó o viene de otro enlace. No se ha conectado nada | Pulsa **Continuar en Lumbre** otra vez |
+| "Inténtalo en un momento" | Lumbre está atendiendo muchas solicitudes | Espera los segundos que indica y continúa |
+| "Demasiados intentos" | Lumbre rechazó varias autorizaciones seguidas y la conexión se cerró | Espera un rato y conecta otra vez |
+| "Lumbre rechaza esta conexión" | La credencial está revocada o el agente está desactivado en Hebra | Comprueba en Hebra que el agente está activado y sigue lo que dice la página |
 | "Solicitud caducada" o "No disponible" | Pasaron los 10 minutos, o falló un servicio | Conecta otra vez |
 | "Acceso denegado" una vez | Conexión antigua en otra pestaña | Conecta otra vez en una sola pestaña |
-| "Acceso denegado" cada vez | Puede haber un intento bloqueado en el servidor | No sigas reintentando: avisa a David |
+| "Acceso denegado" cada vez | Un intento anterior ya no debería bloquear, así que es otra causa | No sigas reintentando: avisa a David con el texto exacto |
 | JSON con `rate_limited` | Demasiados intentos desde tu IP | Espera 10 minutos |
-| "Conexión con la biblioteca cortada" | Cerraste sesión en todas partes o cambiaste la contraseña | No uses `hebra-mcp pair`: avisa a David, tiene que rehacer tu conexión en el servidor |
-| `hebra_list_spaces` vacío | Falta el acceso de agentes o la membresía en dualhand | Apartado 2, o pídeselo a David |
+| "Conexión con la biblioteca cortada", o `hebra_status` con `revoked: true` | Cerraste sesión en todas partes o cambiaste la contraseña | Vuelve a conectar Hebra desde tu aplicación: al iniciar sesión sale **Renueva la conexión** y no pierdes notas. No uses `hebra-mcp pair`. Si vuelve a salir, avisa a David |
+| `hebra_list_spaces` vacío, o dualhand con `granted: false` | Falta el acceso de agentes o la membresía en dualhand | Apartado 2, o pídeselo a David |
+| `space_unavailable` con `rate_limited` | Lumbre limita la frecuencia. No es falta de acceso | Espera los `retryAfterSeconds` que trae y repite |
 
 ## Codex
 
